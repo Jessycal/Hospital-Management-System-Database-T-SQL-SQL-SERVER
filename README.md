@@ -102,9 +102,71 @@ EDA involved selecting, joining my tables to create relationships to gain key in
   ## DATA ANALYSIS
   some of the insights i gained in my queries are as follows.
 
+-  <B>  doctor that has the most appointments </B>
+``` SQL
+	select doc.name, doc.specialization,  count (app.appointment_id) as total_appointment
+	from doctors doc
+	join appointments app
+	on doc.doctor_id = app.doctor_id
+	group by doc.name, doc.specialization
+	order by total_appointment desc
+	offset 0 rows
+	fetch next 1 rows only;
+```
+-   <B> total appointments per doctor and the dates for each appointment </B>
+``` SQL
+	select doc.name, doc.specialization, app.appointment_date, count (app.appointment_id) as total_appointment
+	from doctors doc
+	join appointments app
+	on doc.doctor_id = app.doctor_id
+	group by doc.name, doc.specialization, app.appointment_date
+	order by total_appointment desc;
+ 
+ ```
+
+-   <B> patients that has settled their bills </B>
+ ``` SQL
+	select pat.name, bil.payment_status, bil.total_cost, bil.payment_date
+	from patients pat
+	join billing bil
+	on
+	pat.patient_id = bil.patient_id
+	where bil.payment_status = 'paid';
+```
+ 
+-  <B> Patients with unsettled bills  </b>
+ ``` sql
+select pat.name, bil.payment_status, bil.total_cost, bil.payment_date
+from patients pat
+join billing bil
+on
+pat.patient_id = bil.patient_id
+where bil.payment_status = 'pending'
+ORDER BY total_cost desc
+OFFSET 0 ROWS
+FETCH NEXT 10 ROWS ONLY;
+```
+
+-   <B> Patients above 50 and their diagnosis </B>
+  ``` SQL
+  	select
+	name, age, gender, diagnosis
+	from dbo. patients
+	where age >= 50;
+ ```
+
+- <B> Doctors names, specializations and salaries </b>
+ ``` SQL
+	SELECT name, specialization, max (salary) as highest_salary
+	from  dbo.doctors
+	group by  name, specialization
+	order by highest_salary desc;
+ ```
+
+
   - <B> Total revenue from paid bills </B>
     ``` SQL
-    select sum (total_cost) as revenue
+  	  select sum (total_cost) as revenue
 	from
 	billing where payment_status = 'paid';
  ```
